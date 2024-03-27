@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S'inscrire</title>
+</head>
+<body>
+<div class="droit">
+  <div class="left">
+    <div class="header">
+      <p class="animation a1"><a routerLink="/login">< Retour</a></p>
+      <h2 class="animation a1">S'inscrire</h2>
+      <h4 class="animation a2">Veuillez saisir les champs ci-dessous</h4>
+      <span class="error" *ngIf="error">{{error}}</span>
+    </div>
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+
+      <div class="form">
+        <input type="text" class="form-field animation a3" placeholder="Nom" formControlName="nom">
+        <input type="text" class="form-field animation a3" placeholder="Prénom" formControlName="prenom">
+        <input type="datetime-local" class="form-field animation a3" placeholder="Date de naissance" formControlName="date_naissance">
+        <input type="text" class="form-field animation a3" placeholder="Adresse" formControlName="adresse">
+        <input type="text" class="form-field animation a3" placeholder="Ville" formControlName="ville">
+        <input type="number" class="form-field animation a3" placeholder="Code postal" formControlName="code_postal">
+        <input type="email" class="form-field animation a3" placeholder="Adresse Mail" formControlName="email">
+        <input type="password" class="form-field animation a4" placeholder="Mot de passe" formControlName="password">
+        <p class="animation a5"><a routerLink="/login">Vous avez déjà un compte ? Se connecter</a></p>
+        <button class="animation a6">S'inscrire</button>
+      </div>
+    </form>
+
+  </div>
+  <div class="right"></div>
+</div>
+</body>
+</html>

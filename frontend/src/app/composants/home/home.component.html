@@ -1,0 +1,107 @@
+
+	<body class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<h2>Les dernières ressources</h2>
+						<div *ngFor="let ressource of ressources">
+						<!-- Post -->
+							<article class="post">
+								<header>
+									<div class="title">
+										<h2><a [routerLink]="['ressource', ressource.id]">{{ressource.titre}}</a></h2>
+										<p>{{ressource.texte}}</p>
+									</div>
+									<div class="meta">
+										<div class="published">{{ressource.dateCreation}}</div>
+										<a href="{{ressource.createur}}" class="author"><span class="name">{{ressource.createur.prenom}} {{ressource.createur.nom}}</span><img src="assets/images/avatar.jpg" alt="" /></a>
+									</div>
+								</header>
+								<footer>
+									<ul class="actions">
+										<li><a [routerLink]="['ressource', ressource.id]" class="button large">En savoir plus</a></li>
+									</ul>
+									<ul class="stats">
+											<li *ngFor="let categorie of ressource.categories"><a href="#">{{categorie.libelle}}</a></li>
+										<li><a (click)="mettreFavori(ressource)" class="icon solid fa-heart" [ngClass]="{'blue': dansFavoris(ressource)}">{{ressource.nbFavoris}}</a></li>
+										
+										<li><a class="icon solid fa-comment">{{ressource.nbCommentaires}}</a></li>
+									</ul>
+								</footer>
+							</article>
+						</div>
+
+						<!-- Pagination -->
+							<ul class="actions pagination">
+								<li><a (click)="chargerPlusRessources()" class="button large next">Voir plus de ressources récemment publiées</a></li>
+							</ul>
+
+					</div>
+
+				<!-- Sidebar -->
+					<section id="sidebar" *ngIf="nom">
+
+						<!-- Intro -->
+							<section id="intro">
+								<a href="#" class="logo"><img src="assets/images/logo.jpg" alt="" /></a>
+								<header>
+									<h2>Mon profil</h2>
+									<p>{{nom}}</p>
+								</header>
+							</section>
+
+							<!-- <section>
+								<div class="mini-posts"> -->
+
+										<!-- <article class="mini-post">
+											<header>
+												<h3><a href="single.html">Vitae sed condimentum</a></h3>
+												<time class="published" datetime="2015-10-20"> 20 Octobre 2022</time>
+												<a href="#" class="author"><img src="./assets/images/avatar.jpg" alt="" /></a>
+											</header>
+											<a href="single.html" class="image"><img src="assets/images/pic04.jpg" alt="" /></a>
+										</article>
+
+								</div>
+							</section> -->
+
+						<!-- Posts List -->
+							<section>
+								Mes ressources favorites
+								<ul class="posts">
+									<li *ngFor="let ressource of favoris">
+										<article>
+											<header>
+												<h3><a [routerLink]="['ressource', ressource.id]">{{ressource.titre}}</a></h3>
+												<time class="published">{{ressource.dateCreation}}</time>
+											</header>
+											<a [routerLink]="['ressource', ressource.id]" class="image"><img src="assets/images/pic08.jpg" alt="" /></a>
+										</article>
+									</li>
+								</ul>
+							</section>
+
+						<!-- About -->
+							<section class="blurb">
+								<!-- <h2>A propos</h2>
+								<p>Mauris neque quam, fermentum ut nisl vitae, convallis maximus nisl. Sed mattis nunc id lorem euismod amet placerat. Vivamus porttitor magna enim, ac accumsan tortor cursus at phasellus sed ultricies.</p> -->
+								<ul class="actions">
+									<li><a [routerLink]="['publier-une-ressource']" class="button">Ajouter une ressource</a></li>
+								</ul>
+							</section>
+
+						<!-- Footer -->
+							<!-- <section id="footer">
+								<ul class="icons">
+									<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+									<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+									<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="#" class="icon solid fa-rss"><span class="label">RSS</span></a></li>
+									<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+								</ul>
+							</section> -->
+					</section>
+			</div>
+</body>

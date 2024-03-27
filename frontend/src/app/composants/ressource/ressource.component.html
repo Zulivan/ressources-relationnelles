@@ -1,0 +1,90 @@
+
+<body class="is-preload">
+    <!-- Wrapper -->
+        <div id="wrapper">
+            <!-- Main -->
+                <div id="main">
+						<!-- Post -->
+						<div class="alert alert-warning" role="alert" *ngIf="ressource && !ressource.validee && ressource.titre">
+							Cette ressource n'est pas encore validée par un modérateur. Elle n'est donc pas visible par les autres utilisateurs.
+						  </div>
+
+						  <article class="post" id="ressource" *ngIf="!ressource || !ressource.titre">
+							<h1>Chargement de la ressource en cours...</h1>
+						  </article>
+						  
+							<article class="post" id="ressource" *ngIf="ressource && ressource?.titre">
+								<header>
+									<div class="title">
+										<h2>{{ressource.titre}}</h2>
+										<p>{{ressource.typeRessource.libelle}}</p>
+
+									</div>
+									<div class="meta">
+										<time class="published" datetime="2015-11-01">{{ressource.dateCreation}}</time>
+										<a href="{{ressource.createur['@id']}}" class="author"><span class="name">{{ressource.createur.prenom}} {{ressource.createur.nom}}</span><img src="assets/images/avatar.jpg" alt="" /></a>
+									</div>
+								</header>
+
+								<div class="ressource" [innerHTML]="ressource.document" style="width:100%;"></div>
+
+								<p>{{ressource.texte}}</p>
+								<footer>
+									<ul class="stats">
+										<li *ngFor="let categorie of ressource.categories"><a href="#">{{categorie.libelle}}</a></li>
+									<li><a href="#" class="icon solid fa-heart">{{ressource.nbFavoris}}</a></li>
+									<li><a href="#" class="icon solid fa-comment">{{ressource.nbCommentaires}}</a></li>
+								</ul>
+								</footer>
+							</article>
+
+							<section class="post" *ngIf="user?.moderator">
+								<h3>Espace modération</h3>
+								<button *ngIf="ressource && !ressource.validee" (click)="validerRessource()">Valider cette ressource</button>
+							</section>
+
+							<section class="post" id="commentaires" *ngIf="ressource && ressource.titre">
+								<h3>Commentaires</h3>
+								<div *ngFor="let commentaire of ressource.commentaires">
+									<div id="commentaire-{{commentaire.id}}" class="comment">
+										<div class="comment-details">
+											<span class="comment-author">{{commentaire?.utilisateur?.prenom}} {{commentaire?.utilisateur?.nom}}</span>
+											<span class="comment-date"><button *ngIf="commentaire?.utilisateur?.id == user?.id || user?.moderator" (click)="supprimerCommentaire(commentaire)">Supprimer</button></span>
+										</div>
+										<div class="comment-body">
+											<p class="comment-text">{{commentaire?.text}}</p>
+
+											<div class="replies" *ngFor="let reponse of commentaire.reponses">
+												<div id="commentaire-{{reponse.id}}" class="comment">
+												  <div class="comment-details">
+													<span class="comment-author">{{reponse?.utilisateur?.prenom}} {{reponse?.utilisateur?.nom}} <i>a répondu :</i> </span>
+													<span class="comment-date"><button *ngIf="commentaire?.utilisateur?.id == user?.id || user?.moderator" (click)="supprimerCommentaire(reponse)">Supprimer</button></span>
+												  </div>
+												  <div class="comment-body">
+													<p class="comment-text">{{reponse?.text}}</p>
+												  </div>
+												</div>
+											  </div>
+											  <button *ngIf="user" class="reply-button" (click)="setReponse(commentaire)">Répondre</button>
+										</div>
+									</div>
+								</div>
+								<div id="publierCommentaire" *ngIf="user">
+									<hr>
+									<h3>Publier un commentaire</h3>
+									<form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+									  <div class="fields">
+										<div class="field">
+										  <label for="comment">{{commentLabel}}</label>
+										  <textarea required placeholder="Votre commentaire" formControlName="message"></textarea>
+										</div>
+									  </div>
+									  <ul class="actions">
+										<li><button type="submit">Publier le commentaire</button></li>
+									  </ul>
+									</form>
+								</div>
+							  </section>
+                </div>      
+    </div>
+</body>

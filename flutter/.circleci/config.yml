@@ -1,0 +1,128 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+version: 2.1
+
+# Define a job to be invoked later in a workflow.
+jobs:
+  say-hello:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run:
+          name: "Run tests and say hello"
+          command: |
+            # Here, you would typically run your tests and make sure they output their results to a file in the 'test-results' directory.
+            echo "Running tests..."
+            mkdir -p test-results
+            echo "<testsuite><testcase classname='myclass' name='mytest'><failure>something was wrong, hello world :p</failure></testcase></testsuite>" > test-results/my-tests.xml
+            # Now, say hello
+            echo "Hello, World!"
+      - store_test_results:
+          path: test-results
+  
+  build-flutter:
+    docker:
+      - image: ghcr.io/cirruslabs/flutter:3.7.7
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - flutter-packages-{{ checksum "pubspec.yaml" }}
+      - run:
+          name: Installation des dépendences
+          command: |
+            echo "Installation des dépendences..."
+            flutter pub get
+      - run:
+          name: Vérification de la qualité du code
+          command: |
+            echo "Demarrer le linter..."
+            flutter analyze
+      - run:
+          name: Détection de vulnérabilités dans les packages
+          command: |
+            flutter pub outdated > outdated.txt
+            if grep -q "update these dependencies" outdated.txt; then
+              echo "Dépendances pas à jour !"
+              exit 1
+            else
+              echo "Toutes les dépendances sont à jour."
+            fi
+      - run:
+          name: Lancer les tests
+          command: |
+            echo "Lancement des tests..."
+            flutter test
+      - run:
+          name: Actualisation les changements gitlab (git pull)
+          command: |
+            git config pull.rebase false
+            git pull origin master
+      - run:
+          name: Augmenter la version du projet
+          command: |
+            VERSION=$(cat pubspec.yaml | grep 'version:' | awk '{print $2}')
+            MAJOR=$(echo $VERSION | awk -F. '{print $1}')
+            MINOR=$(echo $VERSION | awk -F. '{print $2}')
+            PATCH=$(echo $VERSION | awk -F. '{print $3}' | cut -d '^' -f1)
+            echo "Version actuelle: $VERSION"
+            echo "MAJOR: $MAJOR"
+            echo "MINOR: $MINOR"
+            echo "PATCH: $PATCH"
+            NEW_PATCH=$((PATCH + 1))
+            echo "Nouveau patch: $NEW_PATCH"
+            NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+            sed -i "s/^version:.*$/version: $NEW_VERSION/" pubspec.yaml
+            echo "Nouvelle version: $NEW_VERSION"
+            git config user.email "juliano.ouvrard@gmail.com"
+            git config user.name "Version"
+            git add pubspec.yaml
+            git commit -m "Update version [skip ci]"
+            git remote set-url origin "$GIT_REPO"
+            git push https://oauth2:${GITLAB_PERSONAL_ACCESS_TOKEN}@gitlab.com/kilianpfr/ressources-mobile.git HEAD:master
+      - run:
+          name: Actualisation les changements gitlab (git pull)
+          command: |
+            git config pull.rebase false
+            git pull origin master
+      - run:
+          name: Construction de l'APK
+          command: |
+            echo "Construction de l'appli android APK..."
+            flutter build apk --release
+      - store_artifacts:
+          path: build/app/outputs/apk/release/app-release.apk
+          destination: app-release.apk
+      - run:
+          name: Actualisation les changements gitlab (git pull)
+          command: |
+            git config pull.rebase false
+            git pull origin master
+      - run:
+          name: Commit la version construite
+          command: |
+            git add .
+            git commit -m "Commit version construite [skip ci]"
+            git push https://oauth2:${GITLAB_PERSONAL_ACCESS_TOKEN}@gitlab.com/kilianpfr/ressources-mobile.git HEAD:master
+            echo "Commit de la version construite effectué."
+      - run:
+          name: Création de la release sur Gitlab
+          command: |
+            echo "GitLab release..."
+            VERSION=$(cat pubspec.yaml | grep 'version:' | awk '{print $2}')
+            MAJOR=$(echo $VERSION | awk -F. '{print $1}')
+            MINOR=$(echo $VERSION | awk -F. '{print $2}')
+            PATCH=$(echo $VERSION | awk -F. '{print $3}' | cut -d '^' -f1)
+            echo "Version actuelle: $VERSION"
+            NEW_PATCH=$((PATCH + 1))
+            NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+            echo "Nouvelle version: $NEW_VERSION"
+            curl --header "PRIVATE-TOKEN: $GITLAB_PERSONAL_ACCESS_TOKEN" --data "tag_name=$NEW_VERSION" --data "description=Release $NEW_VERSION" --data "ref=master" "https://gitlab.com/api/v4/projects/44578346/releases"
+            echo "La release gitlab a été effectuée"
+
+# Orchestrate jobs using workflows
+workflows:
+  build-deploy:
+    jobs:
+      - say-hello
+      - build-flutter

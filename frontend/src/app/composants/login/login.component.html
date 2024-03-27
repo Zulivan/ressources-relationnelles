@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div class="droit">
+  <div class="left">
+    <div class="header">
+      <h2 class="animation a1">Se connecter</h2>
+      <h4 class="animation a2">Veuillez vous connecter a votre compte avec votre adresse mail et votre mot de passe</h4>
+      <span class="error" *ngIf="error">{{error}}</span>
+    </div>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+    <div class="form">
+      <input type="email" class="form-field animation a3" placeholder="Adresse Mail" formControlName="email">
+      <input type="password" class="form-field animation a4" placeholder="Mot de passe" formControlName="password">
+      <p class="animation a5"><a href="#">Mot de Passe oublié</a></p>
+      <p class="animation a5"><a routerLink="/sign-up">Vous n'avez pas de compte ? S'inscrire</a></p>
+      <button class="animation a6">Se connecter</button>
+    </div>
+  </form>
+
+
+
+
+
+  </div>
+  <div class="right"></div>
+</div>
+</body>
+</html>

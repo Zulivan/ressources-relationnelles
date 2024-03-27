@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Ressource</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="px-lg-5">
+      
+          <div class="col">
+            <div class="d-flex flex-wrap">
+              <div class="p-2">     
+                <select class="form-select" [(ngModel)]="categorieSelectionnee" (ngModelChange)="onSelectChange($event)">
+                  <option value="" selected>Sélectionner une catégorie</option>
+                  <option *ngFor="let category of categories" [value]="category.id">{{ category.libelle }}</option>
+                </select>
+            </div>
+              <div class="p-2">    
+                <select class="form-select" [(ngModel)]="typeSelectionne" (ngModelChange)="onSelectChange($event)">
+                  <option value="" selected>Sélectionner un type de ressource</option>
+                  <option *ngFor="let category of typesRessources" [value]="category.id">{{ category.libelle }}</option>
+              </select>
+             </div>
+             <div class="p-2">    
+              <select class="form-select" [(ngModel)]="validee" (ngModelChange)="onSelectChange($event)" *ngIf="user?.moderator">
+                <option [value]="true" selected>Validée</option>
+                <option [value]="false">En attente</option>
+            </select>
+           </div>
+              <div class="p-2">    
+              <p><a routerLink="/publier-une-ressource" class="btn btn-outline">Poster une ressource</a></p>     
+              </div>   
+                </div> 
+          </div>
+
+          <div class="row">
+            <!-- Gallery item -->
+
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4" *ngFor="let ressource of ressources">
+              <div class="bg-white rounded shadow-sm"><img src="{{ressource?.lien}}" alt="" class="img-fluid card-img-top">
+                <div class="p-4">
+                  <h5> <a [routerLink]="['/ressource', ressource.id]" class="text-dark">{{ressource?.titre}}</a></h5>
+                  <p class="small text-muted mb-0">{{ (ressource.texte.length>150)? (ressource?.texte | slice:0:150)+'...':(ressource?.texte) }}</p>
+                  <div class="d-flex align-items-center justify-content-between rounded-pill bg-light px-3 py-2 mt-4">
+                    <p class="small mb-0"><i class="fa fa-picture-o mr-2"></i><span class="font-weight-bold">{{(ressource?.typeRessource?.libelle)}}</span></p>
+                    <p class="small mb-0"><i class="fa fa-picture-o mr-2"></i><span class="font-weight-bold">{{(ressource?.dateCreation)}}</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End -->
+          </div>
+        </div>
+      </div>
+</body>
+</html>

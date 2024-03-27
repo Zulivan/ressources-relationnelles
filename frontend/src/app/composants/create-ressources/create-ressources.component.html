@@ -1,0 +1,42 @@
+<div class="container">
+  <span class="error" *ngIf="error">{{error}}</span>
+  <form [formGroup]="form" enctype="multipart/form-data" (ngSubmit)="onSubmit()">
+    <h3>Ajoutez une ressource</h3>
+    <div class="mb-3">
+        <label for="title" class="form-label">Titre</label>
+        <input type="email" class="form-control" id="title" formControlName="titre" placeholder="Titre de la ressource">
+      </div>
+      <div class="mb-3">
+        <label for="content" class="form-label">Contenu</label>
+        <textarea class="form-control" placeholder="Contenu de la ressource" id="content" formControlName="contenu" rows="3"></textarea>
+      </div>
+      <div class="mb-3">
+    <label for="categorie" class="form-label">Catégorie</label>
+    <select id="categorie" class="form-select" formControlName="categorie">
+      <option value="" selected disabled>Sélectionnez une catégorie</option>
+      <option *ngFor="let item of categories" [value]="item.id">{{ item.libelle }}</option>
+    </select>
+      </div>
+      <div class="mb-3">
+      <label for="type" class="form-label">Type de ressource</label>
+      <select class="form-select" id="type" formControlName="type">
+        <option value="" selected disabled>Sélectionnez le type de la ressource</option>
+        <option *ngFor="let item of types" [value]="item.id">{{ item.libelle }}</option>
+      </select>
+      </div>
+
+    <div class="mb-3" *ngIf="typeRessource('image')">
+      <label for="files" class="form-label">Importer un fichier</label>
+      <input type="file" class="form-control" id="files" formControlName="fichier" (change)="onFileChanged($event)">
+    </div>
+
+    <div class="mb-3" *ngIf="typeRessource('video')">
+      <label for="link" class="form-label">Contenu</label>
+      <textarea class="form-control" placeholder="Lien de votre vidéo" id="link" formControlName="lien" rows="3"></textarea>
+    </div>
+
+    <p>    <button class="btn btn-lg btn-primary" type="submit">
+      Ajouter une resssource
+  </button></p>  
+  </form>  
+</div>

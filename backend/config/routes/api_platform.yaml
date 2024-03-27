@@ -1,0 +1,6 @@
+api_platform:
+    # eager_loading:
+    #     max_joins: 100
+    resource: .
+    type: api_platform
+    prefix: /api

@@ -1,0 +1,24 @@
+<div class="statistics">
+    <h1 class="title">Statistiques</h1>
+  
+    <div class="chart-container">
+      <div class="chart">
+        <canvas #chartAges width="400" height="400"></canvas>
+      </div>
+      <!-- <div class="chart">
+        <canvas #chartLikes width="400" height="400"></canvas>
+      </div> -->
+      <!-- Add more chart containers as needed -->
+    </div>
+  
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value">{{statistiques ? statistiques.nombreUtilisateurs : '?'}}</div>
+        <div class="stat-label">Citoyens qui utilisent la plateforme</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">{{statistiques ? statistiques.nombreRessources : '?'}}</div>
+        <div class="stat-label">Ressources créées</div>
+      </div>
+    </div>
+  </div>
